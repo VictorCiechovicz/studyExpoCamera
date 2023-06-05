@@ -11,6 +11,8 @@ import { Camera } from 'expo-camera'
 import * as MediaLibrary from 'expo-media-library'
 import { Ionicons } from '@expo/vector-icons'
 
+import * as Speech from 'expo-speech'
+
 const CameraScreen = () => {
   const [permissao, setPermissao] = useState(null)
   const [cameraVisivel, setCameraVisivel] = useState(false)
@@ -21,7 +23,7 @@ const CameraScreen = () => {
   const cameraRef = useRef(null)
 
   useEffect(() => {
-    ;(async () => {
+    (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync()
       setPermissao(status === 'granted')
     })()
@@ -67,6 +69,11 @@ const CameraScreen = () => {
     abrirCamera()
   }
 
+  const handleBarCodeScanned = ({ data }) => {
+    Speech.speak(data)
+    setCameraVisivel(false)
+  }
+
   const salvarFoto = async () => {
     try {
       MediaLibrary.requestPermissionsAsync()
@@ -91,6 +98,7 @@ const CameraScreen = () => {
           type={tipoCamera}
           flashMode={flashAtivado}
           ref={cameraRef}
+          onBarCodeScanned={handleBarCodeScanned}
         >
           <View style={{ flex: 1, alignItems: 'center', marginTop: 10 }}>
             <TouchableOpacity onPress={ativarFlash}>
