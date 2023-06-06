@@ -152,9 +152,10 @@ export default ({ navigation }) => {
           </View>
         </Camera>
       ) : (
-        <TouchableOpacity style={styles.button} onPress={abrirCamera}>
-          <Text style={styles.buttonText}>Open Camera</Text>
-        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={abrirCamera}
+        ></TouchableOpacity>
       )}
     </View>
   )
