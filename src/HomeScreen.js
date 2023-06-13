@@ -7,10 +7,10 @@ import * as Speech from 'expo-speech'
 export default () => {
   const [permissao, setPermissao] = useState(null)
   const [cameraVisivel, setCameraVisivel] = useState(false)
-  const [tipoCamera, setTipoCamera] = useState(Camera.Constants.Type.back)
   const [isAudioPlay, setIsAudioPlay] = useState(false)
   const [audioPause, setAudioPause] = useState(false)
   const cameraRef = useRef(null)
+  const lastPressTimeRef = useRef(0)
 
   useEffect(() => {
     Speech.speak(
@@ -53,20 +53,24 @@ export default () => {
     setAudioPause(false)
     await Speech.resume()
   }
+  const handleStop = async () => {
+    setAudioPause(false)
+    setIsAudioPlay(false)
+    await Speech.stop()
+  }
 
   return (
     <View style={styles.container}>
       {cameraVisivel && permissao ? (
         <Camera
           style={styles.camera}
-          type={tipoCamera}
           ref={cameraRef}
           onBarCodeScanned={handleBarCodeScanned}
         ></Camera>
       ) : (
         <TouchableOpacity
-          style={styles.button}
-          onPress={
+            style={styles.button}
+             onPress={
             !isAudioPlay
               ? abrirCamera
               : !audioPause
