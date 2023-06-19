@@ -13,8 +13,8 @@ export default () => {
   const lastPressTimeRef = useRef(0)
 
   useEffect(() => {
-    Speech.speak(
-      'Olá, voce esta no aplicativo IFARSCANQR, clique em qualquer lugar da tela para abrir o leitor de QRCode.'
+    TTS.speak(
+      'Olá, você está no aplicativo IFARSCANQR, clique em qualquer lugar da tela para abrir o leitor de QRCode.'
     )
   }, [])
 
@@ -30,33 +30,33 @@ export default () => {
   }
 
   const handleBarCodeScanned = ({ data }) => {
-    Speech.speak(data, {
-      onDone: () => {
-        setIsAudioPlay(false)
-        setTimeout(() => {
-          Speech.speak(
-            'clique em qualquer lugar da tela para abrir o leitor de QRCode.'
-          )
-        }, 1000)
-      }
+    TTS.speak(data).then(() => {
+      setIsAudioPlay(false)
+      setTimeout(() => {
+        TTS.speak(
+          'Clique em qualquer lugar da tela para abrir o leitor de QRCode.'
+        )
+      }, 1000)
     })
     setIsAudioPlay(true)
     setCameraVisivel(false)
   }
 
-  const handlePause = async () => {
-    await Speech.pause()
+  const handlePause = () => {
+    TTS.stop()
     setAudioPause(true)
   }
 
-  const handleResume = async () => {
+  // Inside the handleResume function
+  const handleResume = () => {
     setAudioPause(false)
-    await Speech.resume()
+    TTS.speak('Resuming...')
   }
-  const handleStop = async () => {
+
+  const handleStop = () => {
     setAudioPause(false)
     setIsAudioPlay(false)
-    await Speech.stop()
+    TTS.stop()
   }
 
   return (
@@ -69,8 +69,8 @@ export default () => {
         ></Camera>
       ) : (
         <TouchableOpacity
-            style={styles.button}
-             onPress={
+          style={styles.button}
+          onPress={
             !isAudioPlay
               ? abrirCamera
               : !audioPause
