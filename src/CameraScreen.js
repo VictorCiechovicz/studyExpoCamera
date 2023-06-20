@@ -11,7 +11,7 @@ import { Camera } from 'expo-camera'
 import * as MediaLibrary from 'expo-media-library'
 import { Ionicons } from '@expo/vector-icons'
 
-import * as Speech from 'expo-speech'
+
 
 const CameraScreen = () => {
   const [permissao, setPermissao] = useState(null)

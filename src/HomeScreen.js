@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { StyleSheet, View, TouchableOpacity } from 'react-native'
 import { Camera } from 'expo-camera'
-
-import * as Speech from 'expo-speech'
+import Tts from 'react-native-tts'
 
 export default () => {
   const [permissao, setPermissao] = useState(null)
@@ -13,7 +12,7 @@ export default () => {
   const lastPressTimeRef = useRef(0)
 
   useEffect(() => {
-    TTS.speak(
+    Tts.speak(
       'Olá, você está no aplicativo IFARSCANQR, clique em qualquer lugar da tela para abrir o leitor de QRCode.'
     )
   }, [])
@@ -30,35 +29,31 @@ export default () => {
   }
 
   const handleBarCodeScanned = ({ data }) => {
-    TTS.speak(data).then(() => {
-      setIsAudioPlay(false)
-      setTimeout(() => {
-        TTS.speak(
-          'Clique em qualquer lugar da tela para abrir o leitor de QRCode.'
-        )
-      }, 1000)
-    })
+    Tts.speak(data)
     setIsAudioPlay(true)
     setCameraVisivel(false)
   }
 
   const handlePause = () => {
-    TTS.stop()
+    Tts.stop()
     setAudioPause(true)
   }
 
-  // Inside the handleResume function
-  const handleResume = () => {
-    setAudioPause(false)
-    TTS.speak('Resuming...')
-  }
 
   const handleStop = () => {
     setAudioPause(false)
     setIsAudioPlay(false)
-    TTS.stop()
+    Tts.stop()
   }
 
+  const handleResume = async () => {
+    setAudioPause(false)
+    const isSpeaking = await Tts.isSpeaking();
+    console.log(isSpeaking)
+    if (!isSpeaking) {
+      Tts.speak('oi'); 
+    }
+  };
   return (
     <View style={styles.container}>
       {cameraVisivel && permissao ? (
@@ -73,9 +68,9 @@ export default () => {
           onPress={
             !isAudioPlay
               ? abrirCamera
-              : !audioPause
-              ? handlePause
-              : handleResume
+              : audioPause
+              ? handleResume
+              : handlePause
           }
         ></TouchableOpacity>
       )}
