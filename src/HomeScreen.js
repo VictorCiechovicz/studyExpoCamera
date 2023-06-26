@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { StyleSheet, View, TouchableOpacity } from 'react-native'
 import { Camera } from 'expo-camera'
 import Tts from 'react-native-tts'
+import api from './Api'
 
 export default () => {
   const [permissao, setPermissao] = useState(null)
@@ -13,7 +14,7 @@ export default () => {
 
   useEffect(() => {
     Tts.speak(
-      'Olá, você está no aplicativo IFARSCANQR, clique em qualquer lugar da tela para abrir o leitor de QRCode.'
+      'Você está no aplicativo IFARSCANQR, clique em qualquer lugar da tela para abrir o leitor de QRCode.'
     )
   }, [])
 
@@ -28,32 +29,31 @@ export default () => {
     setCameraVisivel(true)
   }
 
-  const handleBarCodeScanned = ({ data }) => {
-    Tts.speak(data)
-    setIsAudioPlay(true)
-    setCameraVisivel(false)
+  const handleBarCodeScanned = async ({ data }) => {
+    try {
+      const response = await api.get('/salas')
+      const sala = response.data.find(item => item.id == data)
+
+      Tts.speak(sala.descricao)
+      setIsAudioPlay(true)
+      setCameraVisivel(false)
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const handlePause = () => {
     Tts.stop()
     setAudioPause(true)
+    setCameraVisivel(false)
+    Tts.speak('clique em qualquer lugar da tela para abrir o leitor de QRCode.')
   }
 
-
-  const handleStop = () => {
+  const handleResume = () => {
     setAudioPause(false)
-    setIsAudioPlay(false)
-    Tts.stop()
+    setCameraVisivel(true)
   }
 
-  const handleResume = async () => {
-    setAudioPause(false)
-    const isSpeaking = await Tts.isSpeaking();
-    console.log(isSpeaking)
-    if (!isSpeaking) {
-      Tts.speak('oi'); 
-    }
-  };
   return (
     <View style={styles.container}>
       {cameraVisivel && permissao ? (
@@ -65,13 +65,15 @@ export default () => {
       ) : (
         <TouchableOpacity
           style={styles.button}
-          onPress={
-            !isAudioPlay
-              ? abrirCamera
-              : audioPause
-              ? handleResume
-              : handlePause
-          }
+          onPress={() => {
+            if (!isAudioPlay) {
+              abrirCamera()
+            } else if (audioPause) {
+              handleResume()
+            } else {
+              handlePause()
+            }
+          }}
         ></TouchableOpacity>
       )}
     </View>
