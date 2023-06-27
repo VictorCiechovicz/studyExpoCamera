@@ -1,5 +1,7 @@
 import axios from 'axios'
 
-const api = axios.create({ baseURL: 'http://192.170.11.61:3333' })
+const api = axios.create({
+  baseURL: 'https://salas-iffar-api.netlify.app/.netlify/functions/api'
+})
 
 export default api

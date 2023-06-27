@@ -32,12 +32,19 @@
         "CAMERA_ROLL",
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE",
-        "ACCESS_MEDIA_LOCATION"
+        "ACCESS_MEDIA_LOCATION",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
       ],
       "package": "com.victorciechovicz.estudoCamera"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "ac680017-cec7-4c52-9f50-f1621e562c92"
+      }
     }
   }
 }
