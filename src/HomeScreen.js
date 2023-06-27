@@ -12,6 +12,8 @@ export default () => {
   const cameraRef = useRef(null)
   const lastPressTimeRef = useRef(0)
 
+  Tts.setDefaultRate(0.7)
+
   useEffect(() => {
     Tts.speak(
       'Você está no aplicativo IFARSCANQR, clique em qualquer lugar da tela para abrir o leitor de QRCode.'
