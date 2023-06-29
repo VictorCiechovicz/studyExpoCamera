@@ -31,10 +31,10 @@ export default () => {
     setCameraVisivel(true)
   }
 
-  const handleBarCodeScanned = async ({ data }) => {
+  const handleBarCodeScanned = async ({ data: id }) => {
     try {
-      const response = await api.get('/salas')
-      const sala = response.data.find(item => item.id == data)
+      const response = await api.get(`/salas/${id}`)
+      const sala = response.data
 
       Tts.speak(sala.descricao)
       setIsAudioPlay(true)
